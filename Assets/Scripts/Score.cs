@@ -33,6 +33,23 @@ public class Score : MonoBehaviour
         {
             GameplayManager.Instance.GameEnded();
         }
+        else if (collision.CompareTag("Block"))
+        {
+            Player block = collision.GetComponent<Player>();
+            if (block != null && block.ColorId == ColorId)
+            {
+                // The block and score have the same color, proceed with the game logic
+                GameplayManager.Instance.IncreaseScore(ColorId, transform.position);
+                Destroy(gameObject);
+                Destroy(block.gameObject);
+            }
+            else
+            {
+                // The block and score have different colors, end the game
+                block.StopMoving();
+                GameplayManager.Instance.GameEnded();
+            }
+        }
     }
 
     private void OnEnable()
