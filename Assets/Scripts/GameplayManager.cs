@@ -59,10 +59,13 @@ public class GameplayManager : MonoBehaviour
 
             if (withAnim)
             {
-                // Animate the block movement with DOTween
-                block.transform
-                .DOMove(targetPosition, 0.2f) // 0.3 seconds animation duration
-                .SetEase(Ease.OutSine); // Smooth easing effect
+                if (block.IsDragging == false)
+                {
+                    // Animate the block movement with DOTween
+                    block.transform
+                    .DOMove(targetPosition, 0.2f) // 0.3 seconds animation duration
+                    .SetEase(Ease.OutSine); // Smooth easing effect
+                }
             }
             else
             {
@@ -80,13 +83,11 @@ public class GameplayManager : MonoBehaviour
     public void RegisterBlock(Player block)
     {
         blocks.Add(block);
-        //blocks.Sort((a, b) => a.Position.x.CompareTo(b.Position.x)); // Sort blocks by their x position
     }
 
     public void UnregisterBlock(Player block)
     {
         int removedIndex = blocks.IndexOf(block);
-        //FillEmptySpace(removedIndex);
         blocks.Remove(block);
         Player newBlock = Instantiate(blockPrefab, transHolder);
         Vector3 spawnPosition = new Vector3(
@@ -104,7 +105,7 @@ public class GameplayManager : MonoBehaviour
     {
         foreach (Player block in blocks)
         {
-            if (block != draggingBlock && Vector3.Distance(draggingBlock.Position, block.Position) < 0.5f) // Adjust the distance threshold as needed
+            if (block != draggingBlock && Vector3.Distance(draggingBlock.Position, block.Position) < 1f) // Adjust the distance threshold as needed
             {
                 return block;
             }
@@ -131,51 +132,6 @@ public class GameplayManager : MonoBehaviour
     #region GAME_LOGIC
 
     [SerializeField] private ScoreEffect _scoreEffect;
-
-    private void Update()
-    {
-        if(Input.GetMouseButtonDown(0) && !hasGameFinished)
-        {
-            //if(CurrentScore == null)
-            //{
-            //    GameEnded();
-            //    return;
-            //}
-
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
-            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
-
-            //if(!hit.collider || !hit.collider.gameObject.CompareTag("Block"))
-            //{
-            //    GameEnded();
-            //    return;
-            //}
-
-            //int currentScoreId = CurrentScore.ColorId;
-            //int clickedScoreId = hit.collider.gameObject.GetComponent<Player>().ColorId;
-
-
-            //if(currentScoreId != clickedScoreId)
-            //{
-            //    GameEnded();
-            //    return;
-            //}
-
-            //var t = Instantiate(_scoreEffect, CurrentScore.gameObject.transform.position, Quaternion.identity);
-            //t.Init(Colors[currentScoreId]);
-
-            //var tempScore = CurrentScore;
-            //if(CurrentScore.NextScore != null)
-            //{
-            //    CurrentScore = CurrentScore.NextScore;
-            //}
-            //Destroy(tempScore.gameObject);
-
-            //UpdateScore();
-            
-        }
-    }
 
     #endregion
 
@@ -236,6 +192,7 @@ public class GameplayManager : MonoBehaviour
 
     public void GameEnded()
     {
+        //Debug.LogError("Game End");
         hasGameFinished = true;
         GameEnd?.Invoke();
         SoundManager.Instance.PlaySound(_loseClip);

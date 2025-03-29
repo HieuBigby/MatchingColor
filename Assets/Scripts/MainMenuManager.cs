@@ -62,7 +62,6 @@ public class MainMenuManager : MonoBehaviour
 
         tempScore = currentScore;
         _scoreText.text = tempScore.ToString();
-
     }
 
     [SerializeField] private AudioClip _clickSound;

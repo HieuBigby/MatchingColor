@@ -8,12 +8,12 @@ public class Player : MonoBehaviour
     public float speed;
 
     private Vector3 originalPosition;
-    private Vector3 dragStartPos;
-    private Vector3 lastDragPos;
     private bool isDragging = false;
     private bool isMoving = false;
     private Rigidbody2D rb;
     Tween moveTween;
+
+    public bool IsDragging => isDragging;
 
     public Vector3 Position
     {
@@ -80,16 +80,7 @@ public class Player : MonoBehaviour
             rb.drag = 0f;
             rb.angularDrag = 0f;
         }
-
-        //// Register this block with the BlockManager
-        //GameplayManager.Instance.RegisterBlock(this);
     }
-
-    //private void OnDestroy()
-    //{
-    //    // Unregister this block from the BlockManager
-    //    GameplayManager.Instance.UnregisterBlock(this);
-    //}
 
     private void Update()
     {
@@ -105,8 +96,6 @@ public class Player : MonoBehaviour
                 moveTween?.Complete();
 
                 // Start dragging
-                dragStartPos = mousePos;
-                lastDragPos = mousePos;
                 isDragging = true;
             }
         }
@@ -116,16 +105,11 @@ public class Player : MonoBehaviour
             // Update position during drag
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             transform.position = new Vector3(mousePos.x, mousePos.y, transform.position.z);
-            lastDragPos = mousePos;
 
             // Check for overlapping blocks and swap positions
             Player overlappedBlock = GameplayManager.Instance.GetOverlappedBlock(this);
             if (overlappedBlock != null)
             {
-                //Vector3 tempPosition = overlappedBlock.Position;
-                //overlappedBlock.Position = originalPosition;
-                //originalPosition = tempPosition;
-
                 // Swap the blocks in the list
                 GameplayManager.Instance.SwapBlocks(this, overlappedBlock);
             }
@@ -144,10 +128,6 @@ public class Player : MonoBehaviour
             // Reset dragging
             isDragging = false;
         }
-        //if (rb != null)
-        //{
-        //    lastVelocity = rb.velocity;
-        //}
     }
 
     public void StopMoving()
@@ -168,9 +148,6 @@ public class Player : MonoBehaviour
                 return;
             }
 
-            // Calculate direction and velocity
-            //Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            //Vector3 dragDirection = (mousePos - lastDragPos).normalized;
             Vector3 dragDirection = new Vector2(0f, 1f);
 
             // Apply movement to the block's Rigidbody2D if it has one
@@ -194,20 +171,4 @@ public class Player : MonoBehaviour
             }
         }
     }
-
-    //Vector3 lastVelocity;
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Wall"))
-    //    {
-    //        // Apply bounce velocity
-    //        if (rb != null)
-    //        {
-    //            var speed = lastVelocity.magnitude;
-    //            var direction = Vector3.Reflect(lastVelocity.normalized, collision.contacts[0].normal);
-
-    //            rb.velocity = direction * Mathf.Max(speed, 0f);
-    //        }
-    //    }
-    //}
 }
