@@ -22,6 +22,7 @@ public class MainMenuManager : MonoBehaviour
         {
             StartCoroutine(ShowScore());
         }
+        Application.targetFrameRate = 60;
     }
 
     [SerializeField] private float _animationTime;
