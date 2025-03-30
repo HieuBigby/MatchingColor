@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MainMenuManager : MonoBehaviour
 {
-
     [SerializeField] private TMP_Text _scoreText;
     [SerializeField] private TMP_Text _newBestText;
     [SerializeField] private TMP_Text _highScoreText;

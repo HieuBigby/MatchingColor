@@ -4,6 +4,7 @@ using UnityEngine;
 public class Score : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed;
+    [SerializeField] private float _speedVariation = 1f;
     [SerializeField] private List<Vector3> _spawnPos;
 
     [HideInInspector]
@@ -19,6 +20,12 @@ public class Score : MonoBehaviour
         int colorCount = GameplayManager.Instance.Colors.Count;
         ColorId = Random.Range(0, colorCount);
         GetComponent<SpriteRenderer>().color = GameplayManager.Instance.Colors[ColorId];
+
+        float speedIncrement = GameplayManager.Instance.SpeedIncrement;
+        float maxSpeed = GameplayManager.Instance.MaxSpeed;
+        _moveSpeed = Mathf.Min(_moveSpeed + speedIncrement, maxSpeed);
+        _moveSpeed = _moveSpeed + Random.Range(-_speedVariation, _speedVariation);
+        //Debug.Log("Speed: " + _moveSpeed);  
     }
 
     private void FixedUpdate()

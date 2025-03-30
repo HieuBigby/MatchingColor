@@ -20,6 +20,16 @@ public class GameplayManager : MonoBehaviour
     public List<Player> blocks = new List<Player>();
     public float blockSpacing = 0.5f;
 
+    [SerializeField] private float _speedIncrement = 0.2f;
+    [SerializeField] private float _maxSpeed = 10f;
+    [SerializeField] private float _incrementInterval = 10f; // Interval in seconds
+
+    public float SpeedIncrement => _curSpeedIncrese;
+    public float MaxSpeed => _maxSpeed; 
+
+    private float _lastIncrementTime;
+    private float _curSpeedIncrese;
+
     private void Awake()
     {
         Instance = this;
@@ -132,6 +142,20 @@ public class GameplayManager : MonoBehaviour
     #region GAME_LOGIC
 
     [SerializeField] private ScoreEffect _scoreEffect;
+
+    private void Update()
+    {
+        if (hasGameFinished) return;
+        if (Time.time - _lastIncrementTime > _incrementInterval)
+        {
+            //Debug.Log("Incrementing speed: " + _curSpeedIncrese);
+            _lastIncrementTime = Time.time;
+            if (_curSpeedIncrese < _maxSpeed)
+            {
+                _curSpeedIncrese += _speedIncrement;
+            }
+        }
+    }
 
     #endregion
 
